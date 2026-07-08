@@ -1,29 +1,20 @@
 #!/bin/bash
 
-echo "=========================================="
-echo "      JAMOD AI - FULLY INDEPENDENT        "
-echo "=========================================="
+echo "--- JAMOD AI MASTER STARTUP ---"
 
-# 1. Check & Install Dependencies
-if ! command -v ollama &> /dev/null; then
-    echo "[!] Ollama install nahi hai, install kar raha hoon..."
-    pkg update && pkg install ollama -y
+# Ollama check aur restart
+pkill ollama
+echo "[+] Starting Ollama Server..."
+ollama serve > /dev/null 2>&1 &
+sleep 5
+
+# Check ki model install hai ya nahi
+if ! ollama list | grep -q "llama3.2"; then
+    echo "[!] Model download nahi hai, download ho raha hai (Wait karein)..."
+    ollama pull llama3.2
 fi
 
-# 2. Server Start (Background)
-echo "[+] Ollama server start ho raha hai..."
-ollama serve > /dev/null 2>&1 &
-sleep 8
-
-# 3. Model Pulling (Vision Model for Image & Text)
-# Qwen-VL text aur image dono samajh sakta hai
-echo "[+] AI Model load ho raha hai (Qwen-VL)..."
-ollama pull qwen2.5-vl:3b
-
-# 4. Final Setup
 clear
-echo "=========================================="
-echo "    JAMOD AI READY! (Text & Image)        "
-echo "=========================================="
-echo "Tip: Image analyze karne ke liye path copy paste karo."
-ollama run qwen2.5-vl:3b
+echo "--- JAMOD AI READY ---"
+echo "Ab tum AI se baat kar sakte ho!"
+ollama run llama3.2
